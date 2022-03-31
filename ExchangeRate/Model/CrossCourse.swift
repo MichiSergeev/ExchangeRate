@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CrossCourse {
+struct CrossCourse {
     
     func calculateExchangeRateForDirectPairs(basePair: Double, quotePair: Double) -> Double? {
         guard quotePair != .zero else {
