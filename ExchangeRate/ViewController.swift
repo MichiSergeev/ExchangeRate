@@ -9,8 +9,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    typealias Currency = (String, Double)
-    
     let basePath = "https://openexchangerates.org/api/"
     let latest = "latest.json"
     let appID = "app_id"
@@ -25,6 +23,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Курсы валют к USD"
         view.backgroundColor = .white
         getLatestExchangeRate()
         setUpTableView()
@@ -123,9 +122,32 @@ extension ViewController: UITableViewDataSource {
 }
 
 extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let baseCurrency: Currency
+        let currenciesForCalculation: [Currency]
+        
+        switch indexPath.section {
+        case 0:
+            baseCurrency = favorites[indexPath.row]
+            currenciesForCalculation = other
+        case 1:
+            baseCurrency = other[indexPath.row]
+            currenciesForCalculation = favorites
+        default:
+            return
+        }
+        
+        let currencyRatioVC = CurrencyRatioViewController()
+        currencyRatioVC.baseCurrency = baseCurrency
+        currencyRatioVC.currenciesForCalculation = currenciesForCalculation
+
+        navigationController?.pushViewController(currencyRatioVC, animated: true)
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let section = indexPath.section
-    
+        
         let deleteFromFavorites = UIContextualAction(style: .destructive, title: "Удалить") { _, _, completionHandler in
             let deletedFromFavorites = self.favorites.remove(at: indexPath.row)
             let newFavorites = self.favorites.map({$0.0})

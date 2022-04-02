@@ -13,10 +13,10 @@ class Settings {
             case favourites = "Избранные валюты"
             case other = "Другие валюты"
         }
-        
-        enum RatingDisplayTitles: String, CaseIterable {
-            case currency = "Выбранная валюта"
-        }
+    }
+    
+    enum CurrencyRationScreen: String, CaseIterable {
+        case title = "Курс к выбранной валюте"
     }
     
     enum Favourites: Int {

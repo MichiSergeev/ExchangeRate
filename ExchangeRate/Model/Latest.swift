@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias Currency = (String, Double)
+
 struct Latest: Codable {
     var base: String
     var rates: [String: Double]
