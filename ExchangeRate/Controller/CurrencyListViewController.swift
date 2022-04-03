@@ -7,29 +7,32 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CurrencyListViewController: UIViewController {
     
-    let basePath = "https://openexchangerates.org/api/"
-    let latest = "latest.json"
-    let appID = "app_id"
-    let id = "4502a35230eb4319987a07d2fba726b1"
-    let storage = UserDefaults.standard
-    let titles = Settings.Table.SettingDisplayTitles.self
-    var all: [Currency] = []
-    var favorites: [Currency] = []
-    var other: [Currency] = []
-    var tableView: UITableView!
+    // MARK: - Private properties
+    private let basePath = "https://openexchangerates.org/api/"
+    private let latest = "latest.json"
+    private let appID = "app_id"
+    private let id = "4502a35230eb4319987a07d2fba726b1"
+    private let storage = UserDefaults.standard
+    private let titles = Settings.Table.SettingDisplayTitles.self
+    private var all: [Currency] = []
+    private var favorites: [Currency] = []
+    private var other: [Currency] = []
+    private var tableView: UITableView!
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Курсы валют к USD"
         view.backgroundColor = .white
-        getLatestExchangeRate()
         setUpTableView()
+        getLatestExchangeRate()
     }
     
-    func getLatestExchangeRate() {
+    // MARK: - Private methods
+    private func getLatestExchangeRate() {
         guard let url = URL(string: basePath + latest + "?" + appID + "=" + id) else {
             print("url isn't correct")
             return
@@ -62,7 +65,7 @@ class ViewController: UIViewController {
         task.resume()
     }
     
-    func setUpTableView() {
+    private func setUpTableView() {
         tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
@@ -81,7 +84,8 @@ class ViewController: UIViewController {
     
 }
 
-extension ViewController: UITableViewDataSource {
+// MARK: - Table view data source methods
+extension CurrencyListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         titles.allCases.count
     }
@@ -121,25 +125,26 @@ extension ViewController: UITableViewDataSource {
     }
 }
 
-extension ViewController: UITableViewDelegate {
+// MARK: - Table view delegate methods
+extension CurrencyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let baseCurrency: Currency
+        let currency: Currency
         let currenciesForCalculation: [Currency]
         
         switch indexPath.section {
         case 0:
-            baseCurrency = favorites[indexPath.row]
+            currency = favorites[indexPath.row]
             currenciesForCalculation = other
         case 1:
-            baseCurrency = other[indexPath.row]
+            currency = other[indexPath.row]
             currenciesForCalculation = favorites
         default:
             return
         }
         
         let currencyRatioVC = CurrencyRatioViewController()
-        currencyRatioVC.baseCurrency = baseCurrency
+        currencyRatioVC.currency = currency
         currencyRatioVC.currenciesForCalculation = currenciesForCalculation
 
         navigationController?.pushViewController(currencyRatioVC, animated: true)
@@ -193,7 +198,8 @@ extension ViewController: UITableViewDelegate {
     }
 }
 
-private extension ViewController {
+// MARK: - Currency properties setting methods
+private extension CurrencyListViewController {
     func setAllCurrencies(from dictionary: [String: Double]) {
         all = dictionary.map { ($0.key, $0.value) }
     }
@@ -212,7 +218,10 @@ private extension ViewController {
         favorites.sort { $0.0 < $1.0 }
         other.sort { $0.0 < $1.0 }
     }
-    
+}
+
+// MARK: - Data storage methods
+private extension CurrencyListViewController {
     func readFromStorage() -> [String] {
         let key = Settings.UserDefaultKeys.favorites.rawValue
         

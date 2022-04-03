@@ -9,35 +9,32 @@ import UIKit
 
 class CurrencyRatioViewController: UITableViewController {
     
-    var baseCurrency: Currency!
+    // MARK: - Public properties
+    var currency: Currency!
     var currenciesForCalculation: [Currency] = []
-    var calculatedCurrencies: [Currency] = []
     
+    // MARK: - Private properties
+    private var calculatedCurrencies: [Currency] = []
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = Settings.CurrencyRationScreen.title.rawValue + currency.0
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        
-        navigationItem.title = "Курсы валют к \(baseCurrency.0)"
         calculateRatio()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
-    }
-    
-    func calculateRatio() {
+    // MARK: - Private methods
+    private func calculateRatio() {
+        let model = CrossCourse()
         calculatedCurrencies = currenciesForCalculation.map { code, rate in
-            let model = CrossCourse()
-            let newRate = model.calculateExchangeRateForDirectPairs(basePair: rate, quotePair: baseCurrency.1) ?? -1
+            let newRate = model.calculateExchangeRateForDirectPairs(basePair: rate, quotePair: currency.1) ?? -1
             return (code, newRate)
         }
     }
 
     // MARK: - Table view data source
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
@@ -62,8 +59,7 @@ class CurrencyRatioViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        baseCurrency.0
+        currency.0
     }
-    
 
 }

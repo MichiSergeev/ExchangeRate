@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0515A90D27EF48B2003376FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515A90C27EF48B2003376FE /* AppDelegate.swift */; };
-		0515A91127EF48B2003376FE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515A91027EF48B2003376FE /* ViewController.swift */; };
+		0515A91127EF48B2003376FE /* CurrencyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515A91027EF48B2003376FE /* CurrencyListViewController.swift */; };
 		0515A91627EF48B5003376FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0515A91527EF48B5003376FE /* Assets.xcassets */; };
 		0515A91927EF48B5003376FE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0515A91727EF48B5003376FE /* LaunchScreen.storyboard */; };
 		0515A92427F0285C003376FE /* Latest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0515A92327F0285C003376FE /* Latest.swift */; };
@@ -31,7 +31,7 @@
 /* Begin PBXFileReference section */
 		0515A90927EF48B2003376FE /* ExchangeRate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExchangeRate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0515A90C27EF48B2003376FE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0515A91027EF48B2003376FE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0515A91027EF48B2003376FE /* CurrencyListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListViewController.swift; sourceTree = "<group>"; };
 		0515A91527EF48B5003376FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0515A91827EF48B5003376FE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0515A91A27EF48B5003376FE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,11 +85,8 @@
 				0515A92027EF74BF003376FE /* Model */,
 				0515A92127EF74CD003376FE /* View */,
 				0515A92227EF74D5003376FE /* Controller */,
-				0515A90C27EF48B2003376FE /* AppDelegate.swift */,
-				0515A91027EF48B2003376FE /* ViewController.swift */,
-				0515A91527EF48B5003376FE /* Assets.xcassets */,
-				0515A91727EF48B5003376FE /* LaunchScreen.storyboard */,
-				0515A91A27EF48B5003376FE /* Info.plist */,
+				05FC061927F959F8006F11F5 /* AppDelegate */,
+				05FC061827F959ED006F11F5 /* Resources */,
 			);
 			path = ExchangeRate;
 			sourceTree = "<group>";
@@ -107,6 +104,7 @@
 		0515A92127EF74CD003376FE /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0515A91727EF48B5003376FE /* LaunchScreen.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -114,6 +112,7 @@
 		0515A92227EF74D5003376FE /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				0515A91027EF48B2003376FE /* CurrencyListViewController.swift */,
 				059086AA27F8665A00090461 /* CurrencyRatioViewController.swift */,
 			);
 			path = Controller;
@@ -125,6 +124,23 @@
 				0515A93427F27BAC003376FE /* CrossCourseModelTests.swift */,
 			);
 			path = ExchangeRateTests;
+			sourceTree = "<group>";
+		};
+		05FC061827F959ED006F11F5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0515A91527EF48B5003376FE /* Assets.xcassets */,
+				0515A91A27EF48B5003376FE /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		05FC061927F959F8006F11F5 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				0515A90C27EF48B2003376FE /* AppDelegate.swift */,
+			);
+			path = AppDelegate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,7 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0515A91127EF48B2003376FE /* ViewController.swift in Sources */,
+				0515A91127EF48B2003376FE /* CurrencyListViewController.swift in Sources */,
 				0515A90D27EF48B2003376FE /* AppDelegate.swift in Sources */,
 				0515A92427F0285C003376FE /* Latest.swift in Sources */,
 				0515A92627F0626D003376FE /* CrossCourse.swift in Sources */,
@@ -391,7 +407,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CGC55CVGYA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ExchangeRate/Info.plist;
+				INFOPLIST_FILE = ExchangeRate/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -419,7 +435,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CGC55CVGYA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ExchangeRate/Info.plist;
+				INFOPLIST_FILE = ExchangeRate/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
