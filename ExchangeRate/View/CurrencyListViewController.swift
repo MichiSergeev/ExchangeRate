@@ -16,11 +16,13 @@ class CurrencyListViewController: UIViewController {
     private var tableView: UITableView!
     private let disposeBag = DisposeBag()
     private var viewModel = CurrencyViewModel()
+    private var dataSource: CurrencyListDataSource!
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        dataSource = CurrencyListDataSource(viewModel: viewModel)
         title = "Курсы валют к USD"
         view.backgroundColor = .white
         setUpTableView()
@@ -31,7 +33,7 @@ class CurrencyListViewController: UIViewController {
     private func setUpTableView() {
         tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
+        tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "currencyCell")
         
@@ -57,47 +59,6 @@ class CurrencyListViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
-}
-
-// MARK: - Table view data source methods
-extension CurrencyListViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        viewModel.titles.allCases.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return viewModel.favorites.count
-        case 1:
-            return viewModel.other.count
-        default:
-            return 0
-        }
-    }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        viewModel.titles.allCases[section].rawValue
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard var cell = tableView.dequeueReusableCell(withIdentifier: "currencyCell") else {
-            return UITableViewCell()
-        }
-
-        cell = UITableViewCell(style: .subtitle, reuseIdentifier: "currenciesCell")
-
-        switch indexPath.section {
-        case 0:
-            cell.textLabel?.text = viewModel.favorites[indexPath.row].0
-            cell.detailTextLabel?.text = String(viewModel.favorites[indexPath.row].1)
-        default:
-            cell.textLabel?.text = viewModel.other[indexPath.row].0
-            cell.detailTextLabel?.text = String(viewModel.other[indexPath.row].1)
-        }
-
-        return cell
-    }
 }
 
 // MARK: - Table view delegate methods
@@ -127,35 +88,8 @@ extension CurrencyListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let section = indexPath.section
-
-        let deleteFromFavorites = UIContextualAction(style: .destructive, title: "Удалить") { _, _, completionHandler in
-            let deletedFromFavorites = self.viewModel.favorites.remove(at: indexPath.row)
-            let newFavorites = self.viewModel.favorites.map({$0.0})
-            self.viewModel.writeToStorage(newFavorites)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.viewModel.other.append(deletedFromFavorites)
-            self.viewModel.other.sort(by: { $0.0 < $1.0 })
-            let index = self.viewModel.other.firstIndex { $0.0 == deletedFromFavorites.0 } ?? 0
-            let newIndexPath = IndexPath(row: index, section: 1)
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
-            completionHandler(true)
-        }
-
-        let addToFavorites = UIContextualAction(style: .normal, title: "В избранное") { (_, _, completionHandler) in
-            let deletedFromOther = self.viewModel.other.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.viewModel.favorites.append(deletedFromOther)
-            let newFavorites = self.viewModel.favorites.map({$0.0})
-            self.viewModel.writeToStorage(newFavorites)
-            self.viewModel.favorites.sort { $0.0 < $1.0 }
-            let index = self.viewModel.favorites.firstIndex { $0.0 == deletedFromOther.0 } ?? 0
-            let newIndexPath = IndexPath(row: index, section: 0)
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
-            completionHandler(true)
-        }
-
-        addToFavorites.backgroundColor = .orange
-
+        let deleteFromFavorites = makeDeleteSwipeAvtion(tableView: tableView, indexPath: indexPath)
+        let addToFavorites = makeAddToFavoritesSwipeAction(tableView: tableView, indexPath: indexPath)
         switch section {
         case 0:
             if viewModel.favorites.count > Settings.Favourites.min.rawValue {
@@ -170,5 +104,40 @@ extension CurrencyListViewController: UITableViewDelegate {
                 return UISwipeActionsConfiguration(actions: [])
             }
         }
+    }
+    
+    private func makeDeleteSwipeAvtion(tableView: UITableView, indexPath: IndexPath) -> UIContextualAction {
+        let deleteFromFavorites = UIContextualAction(style: .destructive, title: "Удалить") { _, _, completionHandler in
+            let deletedFromFavorites = self.viewModel.favorites.remove(at: indexPath.row)
+            let newFavorites = self.viewModel.favorites.map({$0.0})
+            self.viewModel.writeToStorage(newFavorites)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.viewModel.other.append(deletedFromFavorites)
+            self.viewModel.other.sort(by: { $0.0 < $1.0 })
+            let index = self.viewModel.other.firstIndex { $0.0 == deletedFromFavorites.0 } ?? 0
+            let newIndexPath = IndexPath(row: index, section: 1)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+            completionHandler(true)
+        }
+        
+        return deleteFromFavorites
+    }
+    
+    private func makeAddToFavoritesSwipeAction(tableView: UITableView, indexPath: IndexPath) -> UIContextualAction {
+        let addToFavorites = UIContextualAction(style: .normal, title: "В избранное") { (_, _, completionHandler) in
+            let deletedFromOther = self.viewModel.other.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.viewModel.favorites.append(deletedFromOther)
+            let newFavorites = self.viewModel.favorites.map({$0.0})
+            self.viewModel.writeToStorage(newFavorites)
+            self.viewModel.favorites.sort { $0.0 < $1.0 }
+            let index = self.viewModel.favorites.firstIndex { $0.0 == deletedFromOther.0 } ?? 0
+            let newIndexPath = IndexPath(row: index, section: 0)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+            completionHandler(true)
+        }
+        addToFavorites.backgroundColor = .orange
+        
+        return addToFavorites
     }
 }
