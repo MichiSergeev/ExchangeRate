@@ -8,7 +8,7 @@
 import Foundation
 
 class Settings {
-    enum Table {/Users/opium/Documents/xcode/VSTU_Projects/ExchangeRate/ExchangeRate/Model/Settings.swift
+    enum Table {
         enum SettingDisplayTitles: String, CaseIterable {
             case favourites = "Избранные валюты"
             case other = "Другие валюты"
